@@ -1,149 +1,265 @@
-// ===== SISTEM PENYIMPANAN DATA DENGAN LOCALSTORAGE =====
+// ===== KONFIGURASI API =====
+const API_URL = 'https://script.google.com/macros/s/AKfycby4SWqAt2YDLTC1sFgrWUdwJEdpP9uZ9bA1gTWQbCOSDJGF8r8maVsyS6gWXaqpqGr9PA/exec'; // URL dari Langkah 3
 
-// Fungsi untuk memuat data dari localStorage
-function loadDataFromStorage() {
-    // Muat kegiatan
-    const storedActivities = localStorage.getItem('portfolioActivities');
-    if (storedActivities) {
-        activities = JSON.parse(storedActivities);
+// ===== FUNGSI UTAMA UNTUK CALL API =====
+async function callAPI(action, data = null, method = 'POST') {
+  try {
+    const payload = { action, data };
+    
+    let response;
+    if (method === 'GET') {
+      const params = new URLSearchParams({ action, ...data });
+      response = await fetch(`${API_URL}?${params}`);
+    } else {
+      response = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
-
-    // Muat link
-    const storedLinks = localStorage.getItem('portfolioLinks');
-    if (storedLinks) {
-        savedLinks = JSON.parse(storedLinks);
-    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    return { success: false, error: 'Koneksi gagal' };
+  }
 }
 
-// Fungsi untuk menyimpan kegiatan ke localStorage
-function saveActivitiesToStorage() {
-    localStorage.setItem('portfolioActivities', JSON.stringify(activities));
-}
+// ===== FUNGSI YANG DIUBAH UNTUK PAKAI API =====
 
-// Fungsi untuk menyimpan link ke localStorage
-function saveLinksToStorage() {
-    localStorage.setItem('portfolioLinks', JSON.stringify(savedLinks));
-}
-
-// ===== INISIALISASI & MODIFIKASI FUNGSI YANG ADA =====
-
-// Data untuk link yang disimpan
+// Data global
 let savedLinks = [];
-// Data untuk kegiatan
 let activities = [];
 
-// Inisialisasi aplikasi
-document.addEventListener('DOMContentLoaded', function() {
-    // MUAT DATA DARI LOCALSTORAGE SAAT PERTAMA KALI
-    loadDataFromStorage();
-
-    // Set konten awal dan render data yang telah dimuat
-    loadSection('dashboard');
-    renderSavedLinks();
-    
-    // ... (kode setup event listeners lainnya TETAP SAMA)
-    setupNavigation();
-    document.getElementById('addActivityBtn').addEventListener('click', addNewActivity);
-    document.getElementById('saveLinkBtn').addEventListener('click', saveLink);
-    document.getElementById('exportBtn').addEventListener('click', exportData);
-    document.getElementById('mobileToggle').addEventListener('click', toggleMobileMenu);
-    
-    document.getElementById('linkTitle').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') saveLink();
-    });
-    document.getElementById('linkInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') saveLink();
-    });
+// Inisialisasi aplikasi - MUAT DATA DARI API
+document.addEventListener('DOMContentLoaded', async function() {
+  // Muat data awal dari API
+  await loadDataFromAPI();
+  
+  // Setup lainnya tetap sama
+  loadSection('dashboard');
+  renderSavedLinks();
+  setupNavigation();
+  
+  document.getElementById('addActivityBtn').addEventListener('click', addNewActivity);
+  document.getElementById('saveLinkBtn').addEventListener('click', saveLink);
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('mobileToggle').addEventListener('click', toggleMobileMenu);
+  
+  document.getElementById('linkTitle').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') saveLink();
+  });
+  
+  document.getElementById('linkInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') saveLink();
+  });
 });
 
-// ===== MODIFIKASI FUNGSI AGAR MENYIMPAN KE LOCALSTORAGE =====
-
-// Fungsi untuk menambah kegiatan baru (MODIFIED)
-function addNewActivity() {
-    const title = prompt("Masukkan judul kegiatan baru:");
-    if (!title || title.trim() === "") return;
+// Fungsi muat data dari API
+async function loadDataFromAPI() {
+  try {
+    // Load activities
+    const activitiesRes = await callAPI('getActivities', null, 'GET');
+    if (activitiesRes.success) {
+      activities = activitiesRes.data;
+    }
     
-    const description = prompt("Masukkan deskripsi kegiatan:");
-    const tagsInput = prompt("Masukkan tag (pisahkan dengan koma):");
-    
-    const newActivity = {
-        id: activities.length > 0 ? Math.max(...activities.map(a => a.id)) + 1 : 1,
-        section: getCurrentSection(),
-        title: title,
-        description: description || "Deskripsi kegiatan",
-        tags: tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : ['Baru']
-    };
-    
-    activities.push(newActivity);
-    // SIMPAN KE LOCALSTORAGE SETELAH MENAMBAH
-    saveActivitiesToStorage();
-    renderActivities(getCurrentSection());
-    
-    // ... (kode update detail meta TETAP SAMA)
-    alert(`Kegiatan "${title}" berhasil ditambahkan!`);
+    // Load links
+    const linksRes = await callAPI('getLinks', null, 'GET');
+    if (linksRes.success) {
+      savedLinks = linksRes.data;
+    }
+  } catch (error) {
+    console.error('Gagal memuat data:', error);
+    alert('Gagal memuat data dari server');
+  }
 }
 
-// Fungsi untuk menyimpan link (MODIFIED)
-function saveLink() {
-    const urlInput = document.getElementById('linkInput');
-    const titleInput = document.getElementById('linkTitle');
-    
-    const url = urlInput.value.trim();
-    const title = titleInput.value.trim();
-    
-    if (!url) {
-        alert('Silakan masukkan URL link terlebih dahulu!');
-        urlInput.focus();
-        return;
-    }
-    
-    try {
-        new URL(url);
-    } catch (e) {
-        alert('URL tidak valid. Pastikan URL dimulai dengan http:// atau https://');
-        urlInput.focus();
-        return;
-    }
-    
-    const newLink = {
-        id: savedLinks.length > 0 ? Math.max(...savedLinks.map(l => l.id)) + 1 : 1,
-        url: url,
-        title: title || url
-    };
-    
+// ===== FUNGSI ACTIVITIES DENGAN API =====
+async function addNewActivity() {
+  const title = prompt("Masukkan judul kegiatan baru:");
+  if (!title || title.trim() === "") return;
+  
+  const description = prompt("Masukkan deskripsi kegiatan:");
+  const tagsInput = prompt("Masukkan tag (pisahkan dengan koma):");
+  
+  const newActivity = {
+    section: getCurrentSection(),
+    title: title,
+    description: description || "Deskripsi kegiatan",
+    tags: tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : ['Baru']
+  };
+  
+  const result = await callAPI('addActivity', newActivity);
+  
+  if (result.success) {
+    newActivity.id = result.id;
+    activities.push(newActivity);
+    renderActivities(getCurrentSection());
+    alert(`Kegiatan "${title}" berhasil ditambahkan!`);
+  } else {
+    alert('Gagal menambahkan kegiatan: ' + (result.error || 'Unknown error'));
+  }
+}
+
+// ===== FUNGSI LINKS DENGAN API =====
+async function saveLink() {
+  const urlInput = document.getElementById('linkInput');
+  const titleInput = document.getElementById('linkTitle');
+  
+  const url = urlInput.value.trim();
+  const title = titleInput.value.trim();
+  
+  if (!url) {
+    alert('Silakan masukkan URL link terlebih dahulu!');
+    urlInput.focus();
+    return;
+  }
+  
+  try {
+    new URL(url);
+  } catch (e) {
+    alert('URL tidak valid. Pastikan URL dimulai dengan http:// atau https://');
+    urlInput.focus();
+    return;
+  }
+  
+  const newLink = {
+    url: url,
+    title: title || url
+  };
+  
+  const result = await callAPI('addLink', newLink);
+  
+  if (result.success) {
+    newLink.id = result.id;
     savedLinks.push(newLink);
-    // SIMPAN KE LOCALSTORAGE SETELAH MENAMBAH
-    saveLinksToStorage();
     renderSavedLinks();
-    
     urlInput.value = '';
     titleInput.value = '';
     alert('Link berhasil disimpan!');
+  } else {
+    alert('Gagal menyimpan link: ' + (result.error || 'Unknown error'));
+  }
 }
 
-// Fungsi untuk menghapus link (MODIFIED)
-function deleteLink(linkId) {
-    if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
-        savedLinks = savedLinks.filter(link => link.id !== linkId);
-        // SIMPAN KE LOCALSTORAGE SETELAH MENGHAPUS
-        saveLinksToStorage();
-        renderSavedLinks();
-    }
-}
-
-// Fungsi edit link (MODIFIED)
-function editLink(linkId) {
-    const link = savedLinks.find(l => l.id === linkId);
-    if (!link) return;
+async function deleteLink(linkId) {
+  if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+    const result = await callAPI('deleteLink', { id: linkId });
     
-    const newTitle = prompt("Edit judul link:", link.title);
-    if (newTitle !== null) {
-        link.title = newTitle || link.url;
-        // SIMPAN KE LOCALSTORAGE SETELAH MENGEDIT
-        saveLinksToStorage();
-        renderSavedLinks();
+    if (result.success) {
+      savedLinks = savedLinks.filter(link => link.id != linkId);
+      renderSavedLinks();
+    } else {
+      alert('Gagal menghapus link: ' + (result.error || 'Unknown error'));
     }
+  }
 }
 
-// ... (Fungsi-fungsi lainnya seperti renderSavedLinks, renderActivities, exportData, dll. TETAP SAMA. JANGAN DIHAPUS)
-// Pastikan fungsi-fungsi tersebut masih ada di bagian akhir kode Anda.
+async function editLink(linkId) {
+  const link = savedLinks.find(l => l.id == linkId);
+  if (!link) return;
+  
+  const newTitle = prompt("Edit judul link:", link.title);
+  if (newTitle !== null) {
+    // Untuk edit sederhana, kita hapus dan buat baru
+    // (Atau Anda bisa buat fungsi 'updateLink' di API)
+    const deleteResult = await callAPI('deleteLink', { id: linkId });
+    
+    if (deleteResult.success) {
+      const newLink = {
+        url: link.url,
+        title: newTitle || link.url
+      };
+      
+      const addResult = await callAPI('addLink', newLink);
+      
+      if (addResult.success) {
+        // Refresh data
+        const linksRes = await callAPI('getLinks', null, 'GET');
+        if (linksRes.success) {
+          savedLinks = linksRes.data;
+          renderSavedLinks();
+        }
+      }
+    }
+  }
+}
+
+// ===== FUNGSI RENDER TETAP SAMA (tapi dengan penyesuaian kecil) =====
+function renderActivities(sectionId) {
+  const activityList = document.getElementById('activityList');
+  const sectionActivities = activities.filter(activity => 
+    activity.section === sectionId || 
+    activity.section.startsWith(sectionId.split('-')[0])
+  );
+  
+  if (sectionActivities.length === 0) {
+    activityList.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fas fa-tasks"></i></div>
+        <div class="empty-text">Belum ada kegiatan</div>
+        <div class="empty-subtext">Tambahkan kegiatan baru dengan tombol "Tambah Kegiatan"</div>
+      </div>
+    `;
+    return;
+  }
+  
+  let activitiesHTML = '<h3 class="card-title" style="font-size: 16px; margin-bottom: 16px;">';
+  activitiesHTML += '<i class="fas fa-list-check card-title-icon"></i>';
+  activitiesHTML += 'Daftar Kegiatan</h3>';
+  
+  sectionActivities.forEach(activity => {
+    activitiesHTML += `
+      <div class="activity-item fade-in">
+        <div class="activity-title">${activity.title}</div>
+        <div class="activity-desc">${activity.description}</div>
+        <div class="activity-tags">
+          ${activity.tags ? activity.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('') : ''}
+        </div>
+      </div>
+    `;
+  });
+  
+  activityList.innerHTML = activitiesHTML;
+}
+
+function renderSavedLinks() {
+  const savedLinksContainer = document.getElementById('savedLinks');
+  
+  if (savedLinks.length === 0) {
+    savedLinksContainer.innerHTML = `
+      <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+        <i class="fas fa-link" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+        <div>Belum ada link yang disimpan</div>
+      </div>
+    `;
+    return;
+  }
+  
+  let linksHTML = '<h4 style="font-size: 14px; color: var(--text-secondary); margin: 20px 0 12px 0;">Link Tersimpan:</h4>';
+  
+  savedLinks.forEach(link => {
+    linksHTML += `
+      <div class="link-item">
+        <a href="${link.url}" target="_blank" class="link-url" title="${link.url}">
+          ${link.title || link.url}
+        </a>
+        <div class="link-actions">
+          <button class="icon-btn" onclick="editLink('${link.id}')" title="Edit">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="icon-btn" onclick="deleteLink('${link.id}')" title="Hapus">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  });
+  
+  savedLinksContainer.innerHTML = linksHTML;
+}
+
+// ===== FUNGSI HELPER LAINNYA TETAP SAMA =====
+// (setupNavigation, loadSection, updateActiveNav, getCurrentSection, toggleMobileMenu, exportData)
+// PASTIKAN FUNGSI-FUNGSI INI MASIH ADA DI FILE ANDA
