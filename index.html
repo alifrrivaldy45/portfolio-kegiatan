@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio Kegiatan - AI Studio Template</title>
+    <style>
+        :root {
+            --primary-bg: #0f0f0f;
+            --secondary-bg: #1a1a1a;
+            --card-bg: #242424;
+            --accent-color: #1a73e8;
+            --accent-hover: #0d62d9;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --border-color: #333333;
+            --success-color: #34a853;
+            --warning-color: #f9ab00;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background-color: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-section {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            color: var(--accent-color);
+            font-size: 28px;
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .nav-section {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background-color: rgba(26, 115, 232, 0.15);
+            color: var(--accent-color);
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sub-nav {
+            margin-left: 40px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .nav-item.active .sub-nav {
+            display: block;
+        }
+
+        .sub-nav-item {
+            margin-bottom: 4px;
+        }
+
+        .sub-nav-link {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .sub-nav-link:hover,
+        .sub-nav-link.active {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .content-area {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Grid Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title-icon {
+            color: var(--accent-color);
+        }
+
+        /* Description Card */
+        .description-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .link-section {
+            margin-top: 24px;
+        }
+
+        .link-input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .saved-links {
+            margin-top: 20px;
+        }
+
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: var(--secondary-bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .link-item:hover {
+            border-color: var(--border-color);
+        }
+
+        .link-url {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 14px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 12px;
+        }
+
+        .link-url:hover {
+            text-decoration: underline;
+        }
+
+        .link-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Detail Content */
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .detail-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            background-color: var(--secondary-bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .detail-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        /* Activity List */
+        .activity-list {
+            margin-top: 32px;
+        }
+
+        .activity-item {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .activity-item:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .activity-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .activity-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .activity-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background-color: rgba(26, 115, 232, 0.1);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-bar {
+                padding: 16px 20px;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .content-grid {
+                gap: 16px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--border-color);
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-subtext {
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-project-diagram logo-icon"></i>
+                    Portofolio AI
+                </div>
+                <div class="logo-subtitle">Manajemen Kegiatan Cerdas</div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Menu Utama</div>
+                <ul class="nav-menu">
+                    <li class="nav-item active">
+                        <a href="#" class="nav-link active" data-section="dashboard">
+                            <i class="fas fa-home nav-icon"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="work">
+                            <i class="fas fa-briefcase nav-icon"></i>
+                            Pekerjaan
+                        </a>
+                        <div class="sub-nav">
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="work-projects">Proyek</a>
+                            </div>
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="work-meetings">Rapat</a>
+                            </div>
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="work-documents">Dokumen</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="education">
+                            <i class="fas fa-graduation-cap nav-icon"></i>
+                            Pendidikan
+                        </a>
+                        <div class="sub-nav">
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="education-courses">Mata Kuliah</a>
+                            </div>
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="education-assignments">Tugas</a>
+                            </div>
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="education-research">Riset</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="personal">
+                            <i class="fas fa-user nav-icon"></i>
+                            Personal
+                        </a>
+                        <div class="sub-nav">
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="personal-hobbies">Hobi</a>
+                            </div>
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="personal-skills">Keahlian</a>
+                            </div>
+                            <div class="sub-nav-item">
+                                <a href="#" class="sub-nav-link" data-section="personal-goals">Target</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="projects">
+                            <i class="fas fa-code nav-icon"></i>
+                            Proyek AI
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="settings">
+                            <i class="fas fa-cog nav-icon"></i>
+                            Pengaturan
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="nav-title" style="margin-top: 32px;">Kategori Lain</div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="volunteer">
+                            <i class="fas fa-hands-helping nav-icon"></i>
+                            Volunteering
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="certifications">
+                            <i class="fas fa-certificate nav-icon"></i>
+                            Sertifikasi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="publications">
+                            <i class="fas fa-newspaper nav-icon"></i>
+                            Publikasi
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="exportBtn">
+                        <i class="fas fa-download"></i> Ekspor
+                    </button>
+                    <button class="btn btn-primary" id="addActivityBtn">
+                        <i class="fas fa-plus"></i> Tambah Kegiatan
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Grid Layout -->
+                <div class="content-grid">
+                    <!-- Left Column - Description -->
+                    <div class="card fade-in">
+                        <h2 class="card-title">
+                            <i class="fas fa-info-circle card-title-icon"></i>
+                            Deskripsi Kegiatan
+                        </h2>
+                        <div class="description-text" id="sectionDescription">
+                            Selamat datang di Dashboard Portofolio Kegiatan Anda. Di sini Anda dapat mengelola semua aktivitas, proyek, dan pencapaian Anda. Gunakan menu di sebelah kiri untuk navigasi ke berbagai kategori kegiatan.
+                        </div>
+                        
+                        <div class="link-section">
+                            <h3 class="card-title" style="font-size: 16px; margin-bottom: 16px;">
+                                <i class="fas fa-link card-title-icon"></i>
+                                Tambahkan Link Terkait
+                            </h3>
+                            <div class="link-input-group">
+                                <label class="input-label" for="linkInput">URL Link:</label>
+                                <input type="url" class="input-field" id="linkInput" 
+                                       placeholder="https://contoh.com/proyek-saya">
+                            </div>
+                            <div class="link-input-group">
+                                <label class="input-label" for="linkTitle">Judul Link (opsional):</label>
+                                <input type="text" class="input-field" id="linkTitle" 
+                                       placeholder="Nama untuk link ini">
+                            </div>
+                            <button class="btn btn-primary" id="saveLinkBtn" style="width: 100%; margin-top: 8px;">
+                                <i class="fas fa-save"></i> Simpan Link
+                            </button>
+                            
+                            <div class="saved-links" id="savedLinks">
+                                <h4 style="font-size: 14px; color: var(--text-secondary); margin: 20px 0 12px 0;">
+                                    Link Tersimpan:
+                                </h4>
+                                <!-- Link items will be added here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Detail Content -->
+                    <div class="card fade-in">
+                        <h2 class="card-title">
+                            <i class="fas fa-clipboard-list card-title-icon"></i>
+                            Detail Kegiatan
+                        </h2>
+                        
+                        <div class="detail-section">
+                            <div class="detail-header">
+                                <h3 class="detail-title" id="detailTitle">Dashboard Portofolio</h3>
+                                <span class="detail-meta" id="detailMeta">Terakhir diperbarui: Hari ini</span>
+                            </div>
+                            <div class="detail-content" id="detailContent">
+                                <p>Dashboard ini memberikan gambaran menyeluruh tentang semua kegiatan Anda. Anda dapat:</p>
+                                <ul style="margin-left: 20px; margin-top: 8px;">
+                                    <li>Menambahkan kegiatan baru dengan tombol "Tambah Kegiatan"</li>
+                                    <li>Mengelompokkan kegiatan ke dalam kategori yang sesuai</li>
+                                    <li>Menambahkan link terkait untuk setiap kegiatan</li>
+                                    <li>Melihat detail lengkap dari setiap aktivitas</li>
+                                </ul>
+                                <p style="margin-top: 16px;">Gunakan menu navigasi untuk menjelajahi berbagai kategori kegiatan yang telah Anda buat.</p>
+                            </div>
+                            <div class="detail-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-share"></i> Bagikan
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-list" id="activityList">
+                            <!-- Activity items will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="footer">
+                    <p>Portofolio Kegiatan AI Studio &copy; 2023 | Template responsif untuk Google AI Studio</p>
+                    <p style="margin-top: 8px; font-size: 12px;">Kompatibel dengan desktop, tablet, dan perangkat mobile</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Data konten untuk setiap section
+        const contentData = {
+            'dashboard': {
+                title: 'Dashboard',
+                description: 'Selamat datang di Dashboard Portofolio Kegiatan Anda. Di sini Anda dapat mengelola semua aktivitas, proyek, dan pencapaian Anda. Gunakan menu di sebelah kiri untuk navigasi ke berbagai kategori kegiatan.',
+                detailTitle: 'Dashboard Portofolio',
+                detailMeta: 'Terakhir diperbarui: Hari ini',
+                detailContent: `<p>Dashboard ini memberikan gambaran menyeluruh tentang semua kegiatan Anda. Anda dapat:</p>
+                                <ul style="margin-left: 20px; margin-top: 8px;">
+                                    <li>Menambahkan kegiatan baru dengan tombol "Tambah Kegiatan"</li>
+                                    <li>Mengelompokkan kegiatan ke dalam kategori yang sesuai</li>
+                                    <li>Menambahkan link terkait untuk setiap kegiatan</li>
+                                    <li>Melihat detail lengkap dari setiap aktivitas</li>
+                                </ul>
+                                <p style="margin-top: 16px;">Gunakan menu navigasi untuk menjelajahi berbagai kategori kegiatan yang telah Anda buat.</p>`,
+                activities: [
+                    {
+                        title: 'Setup Awal Portofolio',
+                        description: 'Menyiapkan struktur dasar portofolio kegiatan Anda',
+                        tags: ['Setup', 'Portofolio', 'Awal']
+                    }
+                ]
+            },
+            'work': {
+                title: 'Pekerjaan',
+                description: 'Kategori ini berisi semua kegiatan terkait pekerjaan dan profesional. Termasuk proyek, rapat, dan dokumen kerja penting.',
+                detailTitle: 'Aktivitas Pekerjaan',
+                detailMeta: 'Total: 8 kegiatan',
+                detailContent: `<p>Kategori pekerjaan mencakup semua aktivitas profesional yang Anda lakukan. Ini termasuk:</p>
+                                <ul style="margin-left: 20px; margin-top: 8px;">
+                                    <li><strong>Proyek:</strong> Tugas dan inisiatif utama di tempat kerja</li>
+                                    <li><strong>Rapat:</strong> Pertemuan dengan tim, klien, atau stakeholder</li>
+                                    <li><strong>Dokumen:</strong> Laporan, presentasi, dan dokumen penting lainnya</li>
+                                </ul>
+                                <p style="margin-top: 16px;">Gunakan sub-kategori untuk mengorganisir aktivitas pekerjaan dengan lebih baik.</p>`,
+                activities: [
+                    {
+                        title: 'Proyek Q4 2023',
+                        description: 'Perencanaan dan eksekusi proyek kuartal ke-4 tahun 2023',
+                        tags: ['Proyek', 'Q4', '2023']
+                    },
+                    {
+                        title: 'Rapat Tim Mingguan',
+                        description: 'Rapat rutin untuk sinkronisasi progress tim',
+                        tags: ['Rapat', 'Tim', 'Mingguan']
+                    }
+                ]
+            },
+            'work-projects': {
+                title: 'Proyek Pekerjaan',
+                description: 'Detail semua proyek pekerjaan yang sedang berjalan atau telah diselesaikan. Tambahkan milestone, deadline, dan progress setiap proyek.',
+                detailTitle: 'Manajemen Proyek',
+                detailMeta: 'Aktif: 3 proyek',
+                detailContent: `<p>Manajemen proyek yang efektif sangat penting untuk kesuksesan pekerjaan. Di sini Anda dapat melacak:</p>
+                                <ul style="margin-left: 20px; margin-top: 8px;">
+                                    <li><strong>Progress:</strong> Kemajuan setiap proyek dari awal hingga selesai</li>
+                                    <li><strong>Timeline:</strong> Jadwal dan deadline yang harus dipenuhi</li>
+                                    <li><strong>Resources:</strong> Sumber daya yang dialokasikan untuk setiap proyek</li>
+                                </ul>
+                                <p style="margin-top: 16px;">Pastikan untuk menambahkan link ke dokumen proyek terkait untuk referensi yang mudah.</p>`,
+                activities: [
+                    {
+                        title: 'Pengembangan Website Perusahaan',
+                        description: 'Redesign dan pengembangan website perusahaan utama',
+                        tags: ['Web', 'Development', 'UI/UX']
+                    },
+                    {
+                        title: 'Implementasi Sistem CRM',
+                        description: 'Deploy dan integrasi sistem CRM baru untuk tim sales',
+                        tags: ['CRM', 'Sistem', 'Implementasi']
+                    }
+                ]
+            },
+            'education': {
+                title: 'Pendidikan',
+                description: 'Catatan semua kegiatan akademik, termasuk mata kuliah, tugas, penelitian, dan pencapaian pendidikan lainnya.',
+                detailTitle: 'Aktivitas Pendidikan',
+                detailMeta: 'Semester: Ganjil 2023',
+                detailContent: `<p>Pendidikan adalah investasi jangka panjang untuk masa depan. Kategori ini membantu Anda melacak:</p>
+                                <ul style="margin-left: 20px; margin-top: 8px;">
+                                    <li><strong>Mata Kuliah:</strong> Semua mata kuliah yang sedang atau telah diambil</li>
+                                    <li><strong>Tugas:</strong> Assignment, proyek, dan ujian</li>
+                                    <li><strong>Riset:</strong> Kegiatan penelitian dan publikasi akademik</li>
+                                </ul>
+                                <p style="margin-top: 16px;">Jaga semua materi dan tugas terkait pendidikan di satu tempat untuk kemudahan akses.</p>`,
+                activities: [
+                    {
+                        title: 'Machine Learning Course',
+                        description: 'Mata kuliah tentang fundamental machine learning dan AI',
+                        tags: ['AI', 'Machine Learning', 'Course']
+                    },
+                    {
+                        title: 'Proyek Akhir Semester',
+                        description: 'Pengembangan sistem rekomendasi untuk e-commerce',
+                        tags: ['Proyek', 'Semester', 'Rekomendasi']
+                    }
+                ]
+            }
+        };
+
+        // Data untuk link yang disimpan
+        let savedLinks = [
+            { id: 1, url: 'https://github.com/username/project-ai', title: 'Repository Proyek AI' },
+            { id: 2, url: 'https://drive.google.com/drive/my-docs', title: 'Dokumen Pendukung' }
+        ];
+
+        // Data untuk kegiatan
+        let activities = [
+            { id: 1, section: 'dashboard', title: 'Setup Awal Portofolio', description: 'Menyiapkan struktur dasar portofolio kegiatan Anda', tags: ['Setup', 'Portofolio', 'Awal'] },
+            { id: 2, section: 'work', title: 'Proyek Q4 2023', description: 'Perencanaan dan eksekusi proyek kuartal ke-4 tahun 2023', tags: ['Proyek', 'Q4', '2023'] },
+            { id: 3, section: 'work', title: 'Rapat Tim Mingguan', description: 'Rapat rutin untuk sinkronisasi progress tim', tags: ['Rapat', 'Tim', 'Mingguan'] },
+            { id: 4, section: 'work-projects', title: 'Pengembangan Website Perusahaan', description: 'Redesign dan pengembangan website perusahaan utama', tags: ['Web', 'Development', 'UI/UX'] },
+            { id: 5, section: 'education', title: 'Machine Learning Course', description: 'Mata kuliah tentang fundamental machine learning dan AI', tags: ['AI', 'Machine Learning', 'Course'] }
+        ];
+
+        // Inisialisasi aplikasi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set konten awal
+            loadSection('dashboard');
+            renderSavedLinks();
+            
+            // Setup event listeners untuk navigasi
+            setupNavigation();
+            
+            // Setup event listeners untuk tombol
+            document.getElementById('addActivityBtn').addEventListener('click', addNewActivity);
+            document.getElementById('saveLinkBtn').addEventListener('click', saveLink);
+            document.getElementById('exportBtn').addEventListener('click', exportData);
+            document.getElementById('mobileToggle').addEventListener('click', toggleMobileMenu);
+            
+            // Setup untuk enter key pada input link
+            document.getElementById('linkTitle').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveLink();
+            });
+            
+            document.getElementById('linkInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveLink();
+            });
+        });
+
+        // Fungsi untuk setup navigasi
+        function setupNavigation() {
+            // Navigasi utama
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    
+                    // Toggle sub-nav jika ada
+                    const navItem = this.parentElement;
+                    if (navItem.querySelector('.sub-nav')) {
+                        navItem.classList.toggle('active');
+                        this.classList.toggle('active');
+                    } else {
+                        loadSection(section);
+                        updateActiveNav(section);
+                        
+                        // Tutup sidebar di mobile
+                        if (window.innerWidth <= 1024) {
+                            document.getElementById('sidebar').classList.remove('active');
+                        }
+                    }
+                });
+            });
+            
+            // Navigasi sub-menu
+            document.querySelectorAll('.sub-nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    loadSection(section);
+                    updateActiveNav(section);
+                    
+                    // Tutup sidebar di mobile
+                    if (window.innerWidth <= 1024) {
+                        document.getElementById('sidebar').classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        // Fungsi untuk memuat section
+        function loadSection(sectionId) {
+            const data = contentData[sectionId] || contentData['dashboard'];
+            
+            // Update judul halaman
+            document.getElementById('pageTitle').textContent = data.title;
+            
+            // Update deskripsi
+            document.getElementById('sectionDescription').textContent = data.description;
+            
+            // Update detail
+            document.getElementById('detailTitle').textContent = data.detailTitle;
+            document.getElementById('detailMeta').textContent = data.detailMeta;
+            document.getElementById('detailContent').innerHTML = data.detailContent;
+            
+            // Render aktivitas untuk section ini
+            renderActivities(sectionId);
+            
+            // Animasi fade in
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animation = 'none';
+                setTimeout(() => {
+                    el.style.animation = 'fadeIn 0.3s ease-out';
+                }, 10);
+            });
+        }
+
+        // Fungsi untuk update navigasi aktif
+        function updateActiveNav(activeSection) {
+            // Reset semua nav item
+            document.querySelectorAll('.nav-link, .sub-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Set active berdasarkan section
+            const activeNavLink = document.querySelector(`.nav-link[data-section="${activeSection}"]`);
+            if (activeNavLink) {
+                activeNavLink.classList.add('active');
+                activeNavLink.parentElement.classList.add('active');
+            }
+            
+            const activeSubNavLink = document.querySelector(`.sub-nav-link[data-section="${activeSection}"]`);
+            if (activeSubNavLink) {
+                activeSubNavLink.classList.add('active');
+                
+                // Aktifkan parent nav item juga
+                const parentNavItem = activeSubNavLink.closest('.nav-item');
+                if (parentNavItem) {
+                    parentNavItem.classList.add('active');
+                    const parentNavLink = parentNavItem.querySelector('.nav-link');
+                    if (parentNavLink) parentNavLink.classList.add('active');
+                }
+            }
+        }
+
+        // Fungsi untuk render aktivitas
+        function renderActivities(sectionId) {
+            const activityList = document.getElementById('activityList');
+            const sectionActivities = activities.filter(activity => 
+                activity.section === sectionId || 
+                activity.section.startsWith(sectionId.split('-')[0])
+            );
+            
+            if (sectionActivities.length === 0) {
+                activityList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="empty-text">Belum ada kegiatan</div>
+                        <div class="empty-subtext">Tambahkan kegiatan baru dengan tombol "Tambah Kegiatan"</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let activitiesHTML = '<h3 class="card-title" style="font-size: 16px; margin-bottom: 16px;">';
+            activitiesHTML += '<i class="fas fa-list-check card-title-icon"></i>';
+            activitiesHTML += 'Daftar Kegiatan</h3>';
+            
+            sectionActivities.forEach(activity => {
+                activitiesHTML += `
+                    <div class="activity-item fade-in">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-desc">${activity.description}</div>
+                        <div class="activity-tags">
+                            ${activity.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            activityList.innerHTML = activitiesHTML;
+        }
+
+        // Fungsi untuk render link yang disimpan
+        function renderSavedLinks() {
+            const savedLinksContainer = document.getElementById('savedLinks');
+            
+            if (savedLinks.length === 0) {
+                savedLinksContainer.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+                        <i class="fas fa-link" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                        <div>Belum ada link yang disimpan</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let linksHTML = '<h4 style="font-size: 14px; color: var(--text-secondary); margin: 20px 0 12px 0;">Link Tersimpan:</h4>';
+            
+            savedLinks.forEach(link => {
+                linksHTML += `
+                    <div class="link-item">
+                        <a href="${link.url}" target="_blank" class="link-url" title="${link.url}">
+                            ${link.title || link.url}
+                        </a>
+                        <div class="link-actions">
+                            <button class="icon-btn" onclick="editLink(${link.id})" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="icon-btn" onclick="deleteLink(${link.id})" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            savedLinksContainer.innerHTML = linksHTML;
+        }
+
+        // Fungsi untuk menambah kegiatan baru
+        function addNewActivity() {
+            const title = prompt("Masukkan judul kegiatan baru:");
+            if (!title || title.trim() === "") return;
+            
+            const description = prompt("Masukkan deskripsi kegiatan:");
+            const tagsInput = prompt("Masukkan tag (pisahkan dengan koma):");
+            
+            const newActivity = {
+                id: activities.length + 1,
+                section: getCurrentSection(),
+                title: title,
+                description: description || "Deskripsi kegiatan",
+                tags: tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : ['Baru']
+            };
+            
+            activities.push(newActivity);
+            renderActivities(getCurrentSection());
+            
+            // Update detail meta
+            const currentSection = getCurrentSection();
+            if (contentData[currentSection]) {
+                const sectionActivities = activities.filter(activity => 
+                    activity.section === currentSection || 
+                    activity.section.startsWith(currentSection.split('-')[0])
+                );
+                
+                const detailMeta = document.getElementById('detailMeta');
+                const originalText = detailMeta.textContent;
+                const match = originalText.match(/Total: (\d+) kegiatan/);
+                
+                if (match) {
+                    detailMeta.textContent = `Total: ${sectionActivities.length} kegiatan`;
+                }
+            }
+            
+            alert(`Kegiatan "${title}" berhasil ditambahkan!`);
+        }
+
+        // Fungsi untuk menyimpan link
+        function saveLink() {
+            const urlInput = document.getElementById('linkInput');
+            const titleInput = document.getElementById('linkTitle');
+            
+            const url = urlInput.value.trim();
+            const title = titleInput.value.trim();
+            
+            if (!url) {
+                alert('Silakan masukkan URL link terlebih dahulu!');
+                urlInput.focus();
+                return;
+            }
+            
+            // Validasi URL
+            try {
+                new URL(url);
+            } catch (e) {
+                alert('URL tidak valid. Pastikan URL dimulai dengan http:// atau https://');
+                urlInput.focus();
+                return;
+            }
+            
+            const newLink = {
+                id: savedLinks.length > 0 ? Math.max(...savedLinks.map(l => l.id)) + 1 : 1,
+                url: url,
+                title: title || url
+            };
+            
+            savedLinks.push(newLink);
+            renderSavedLinks();
+            
+            // Reset input
+            urlInput.value = '';
+            titleInput.value = '';
+            
+            alert('Link berhasil disimpan!');
+        }
+
+        // Fungsi untuk menghapus link
+        function deleteLink(linkId) {
+            if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+                savedLinks = savedLinks.filter(link => link.id !== linkId);
+                renderSavedLinks();
+            }
+        }
+
+        // Fungsi untuk edit link (placeholder)
+        function editLink(linkId) {
+            const link = savedLinks.find(l => l.id === linkId);
+            if (!link) return;
+            
+            const newTitle = prompt("Edit judul link:", link.title);
+            if (newTitle !== null) {
+                link.title = newTitle || link.url;
+                renderSavedLinks();
+            }
+        }
+
+        // Fungsi untuk export data
+        function exportData() {
+            const data = {
+                activities: activities,
+                links: savedLinks,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `portofolio-kegiatan-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('Data berhasil diekspor!');
+        }
+
+        // Fungsi untuk toggle menu mobile
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            
+            const icon = document.getElementById('mobileToggle').querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.className = 'fas fa-times';
+            } else {
+                icon.className = 'fas fa-bars';
+            }
+        }
+
+        // Fungsi helper untuk mendapatkan section saat ini
+        function getCurrentSection() {
+            const activeNavLink = document.querySelector('.nav-link.active');
+            const activeSubNavLink = document.querySelector('.sub-nav-link.active');
+            
+            return activeSubNavLink ? 
+                   activeSubNavLink.getAttribute('data-section') : 
+                   (activeNavLink ? activeNavLink.getAttribute('data-section') : 'dashboard');
+        }
+
+        // Handle window resize untuk mobile
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.getElementById('mobileToggle');
+            
+            if (window.innerWidth > 1024) {
+                sidebar.classList.remove('active');
+                mobileToggle.querySelector('i').className = 'fas fa-bars';
+            }
+        });
+    </script>
+</body>
+</html>
